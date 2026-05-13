@@ -1,0 +1,8 @@
+# Ignore everything in Downloads except the SSA monitor files
+*
+!.gitignore
+!ssa_notify.py
+!ssa_dashboard.py
+!ssa_fetch_threads.py
+!ssa_fetch_threads2.py
+!test_ssa.py
