@@ -42,6 +42,17 @@ QUERIES = [
     ("SSA shrimp",               None),
     ("SSA",                      "shrimptank"),
     ("SSA",                      "AquaSwap"),
+    # Buying intent — potential customers
+    ("WTB shrimp",               "AquaSwap"),
+    ("WTB shrimp",               "shrimptank"),
+    ("ISO shrimp",               "AquaSwap"),
+    ("ISO shrimp",               "shrimptank"),
+    ("looking for shrimp",       "shrimptank"),
+    ("looking for shrimp",       "AquaSwap"),
+    ("where to buy shrimp",      None),
+    ("recommend shrimp seller",  None),
+    ("WTB aquatics",             "AquaSwap"),
+    ("ISO aquatics",             "AquaSwap"),
 ]
 
 DISTINCTIVE = ["superior shrimp aquatics", "superiorshrimpaquatics", "djester808"]
@@ -55,6 +66,13 @@ HIGH_SIGNAL_QUERIES = {
     "superior shrimp",
     "ssa shrimp",
     "ssa",
+    "wtb shrimp",
+    "iso shrimp",
+    "looking for shrimp",
+    "where to buy shrimp",
+    "recommend shrimp seller",
+    "wtb aquatics",
+    "iso aquatics",
 }
 
 OUTPUT_DIR  = _HERE

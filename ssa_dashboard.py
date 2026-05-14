@@ -39,6 +39,30 @@ def _is_direct(query, text):
         return True
     return bool(re.search(r'(?<!\w)' + re.escape(query) + r'(?!\w)', text, re.IGNORECASE))
 
+BUYING_QUERIES = {
+    "wtb shrimp",
+    "iso shrimp",
+    "looking for shrimp",
+    "where to buy shrimp",
+    "recommend shrimp seller",
+    "wtb aquatics",
+    "iso aquatics",
+}
+
+BUYING_WORDS = [
+    "wtb", " iso ", "where to buy", "looking to buy", "want to buy",
+    "looking for shrimp", "anyone selling", "recommend a seller",
+    "best place to buy", "good seller", "shrimp seller",
+    "where can i buy", "where can i get", "in search of",
+    "who sells", "any sellers", "buying shrimp",
+]
+
+def is_buying_intent(query, text):
+    if query in BUYING_QUERIES:
+        return True
+    t = text.lower()
+    return any(w in t for w in BUYING_WORDS)
+
 NEG_WORDS = [
     "doa", "dead", "scam", "fraud", "avoid", "terrible", "awful", "horrible",
     "worst", "beware", "warning", "refund", "dispute", "ignored", "no response",
@@ -132,8 +156,8 @@ class Dashboard(tk.Tk):
                  font=("Segoe UI", 9)).pack(side="left")
 
         for label, value in [("All", "all"), ("🎯 Direct SSA", "direct"),
-                              ("⚠ Negative", "neg"), ("✓ Positive", "pos"),
-                              ("My Posts", "own")]:
+                              ("🛒 Leads", "leads"), ("⚠ Negative", "neg"),
+                              ("✓ Positive", "pos"), ("My Posts", "own")]:
             tk.Radiobutton(bar, text=label, variable=self._filter, value=value,
                            command=self.refresh_table,
                            bg="#1e1e2e", fg="#cdd6f4", selectcolor="#313244",
@@ -226,6 +250,7 @@ class Dashboard(tk.Tk):
                 "neg":       neg,
                 "own":       own,
                 "direct":    _is_direct(query, title),
+                "buying":    is_buying_intent(query, title),
                 "query":     query,
             })
         for c in comments:
@@ -245,6 +270,7 @@ class Dashboard(tk.Tk):
                 "neg":       neg,
                 "own":       own,
                 "direct":    _is_direct(query, body),
+                "buying":    is_buying_intent(query, body),
                 "query":     query,
             })
         rows.sort(key=lambda r: r["epoch"], reverse=True)
@@ -260,6 +286,8 @@ class Dashboard(tk.Tk):
         for r in rows:
             if filt == "direct" and not r["direct"]:
                 continue
+            if filt == "leads" and not r["buying"]:
+                continue
             if filt == "neg" and not r["neg"]:
                 continue
             if filt == "pos" and r["neg"]:
@@ -269,7 +297,7 @@ class Dashboard(tk.Tk):
             if query and query not in (r["title"] + r["subreddit"] + r["author"]).lower():
                 continue
 
-            tag = "neg" if r["neg"] else ("own" if r["own"] else "normal")
+            tag = "neg" if r["neg"] else ("own" if r["own"] else ("lead" if r["buying"] else "normal"))
             self.tree.insert("", "end", values=(
                 r["kind"].upper(),
                 fmt_time(r["epoch"]),
@@ -283,6 +311,7 @@ class Dashboard(tk.Tk):
 
         self.tree.tag_configure("neg",    foreground="#f38ba8")
         self.tree.tag_configure("own",    foreground="#a6e3a1")
+        self.tree.tag_configure("lead",   foreground="#f9e2af")
         self.tree.tag_configure("normal", foreground="#cdd6f4")
 
         mtime = ""
