@@ -9,6 +9,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import json
+import re
 import time
 import os
 import subprocess
@@ -39,9 +40,9 @@ QUERIES = [
     ("superior aquatics",        "Aquariums"),
     ("superior aquatics",        "PlantedTank"),
     # SSA abbreviation in shrimp-specific subs only (too noisy globally)
-    ("SSA shrimp",               None),
-    ("SSA",                      "shrimptank"),
-    ("SSA",                      "AquaSwap"),
+    ("ssa shrimp",               None),
+    ("ssa",                      "shrimptank"),
+    ("ssa",                      "AquaSwap"),
     # Buying intent — potential customers
     ("WTB shrimp",               "AquaSwap"),
     ("WTB shrimp",               "shrimptank"),
@@ -74,6 +75,12 @@ HIGH_SIGNAL_QUERIES = {
     "wtb aquatics",
     "iso aquatics",
 }
+
+# These queries must appear as whole words in the content, not substrings
+WHOLE_WORD_REQUIRED = {"ssa shrimp", "ssa"}
+
+def _whole_word_match(query, text):
+    return bool(re.search(r'(?<!\w)' + re.escape(query) + r'(?!\w)', text, re.IGNORECASE))
 
 OUTPUT_DIR  = _HERE
 LOG_DIR     = os.path.join(_HERE, "ssa_monitor_logs")
@@ -212,6 +219,10 @@ def main():
             pid = p.get("id")
             if not pid or pid in seen_post_ids:
                 continue
+            if query in WHOLE_WORD_REQUIRED:
+                text = (p.get("title") or "") + " " + (p.get("selftext") or "")
+                if not _whole_word_match(query, text):
+                    continue
             seen_post_ids.add(pid)
             p["_query"] = query
             all_results["posts"].append(p)
@@ -235,6 +246,9 @@ def main():
             cid = c.get("id")
             if not cid or cid in seen_comment_ids:
                 continue
+            if query in WHOLE_WORD_REQUIRED:
+                if not _whole_word_match(query, c.get("body") or ""):
+                    continue
             seen_comment_ids.add(cid)
             c["_query"] = query
             all_results["comments"].append(c)
