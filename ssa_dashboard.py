@@ -57,11 +57,17 @@ BUYING_WORDS = [
     "who sells", "any sellers", "buying shrimp",
 ]
 
+AQUATICS_WORDS = [
+    "shrimp", "aquatic", "neocaridina", "caridina", "planted tank",
+    "fish tank", "aquarium", "reef", "freshwater", "saltwater",
+    "invertebrate", "snail", "crayfish", "dwarf shrimp", "ssa",
+]
+
 def is_buying_intent(query, text):
     if query in BUYING_QUERIES:
         return True
     t = text.lower()
-    return any(w in t for w in BUYING_WORDS)
+    return any(w in t for w in BUYING_WORDS) and any(w in t for w in AQUATICS_WORDS)
 
 NEG_WORDS = [
     "doa", "dead", "scam", "fraud", "avoid", "terrible", "awful", "horrible",
