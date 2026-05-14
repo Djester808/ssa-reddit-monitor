@@ -24,10 +24,6 @@ DIRECT_QUERIES = {
     "superior shrimp aquatics",
     "superiorshrimpaquatics",
     "djester808",
-    "superior aquatics",
-    "superior shrimp",
-    "ssa shrimp",
-    "ssa",
 }
 
 NEG_WORDS = [
