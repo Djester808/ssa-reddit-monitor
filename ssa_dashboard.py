@@ -6,6 +6,7 @@ Run this to view mentions, filter results, and trigger manual scans.
 
 import json
 import os
+import re
 import subprocess
 import time
 import tkinter as tk
@@ -20,11 +21,23 @@ SEEN_FILE    = os.path.join(LOG_DIR, "seen_ids.json")
 NOTIFY_SCRIPT = os.path.join(_HERE, "ssa_notify.py")
 PYTHON       = os.path.join(os.environ.get("LOCALAPPDATA",""), "Microsoft", "WindowsApps", "python.exe")
 
-DIRECT_QUERIES = {
+_EXACT_QUERIES = {
     "superior shrimp aquatics",
     "superiorshrimpaquatics",
     "djester808",
 }
+
+DIRECT_QUERIES = _EXACT_QUERIES | {
+    "superior aquatics",
+    "superior shrimp",
+    "ssa shrimp",
+    "ssa",
+}
+
+def _is_direct(query, text):
+    if query in _EXACT_QUERIES:
+        return True
+    return bool(re.search(r'(?<!\w)' + re.escape(query) + r'(?!\w)', text, re.IGNORECASE))
 
 NEG_WORDS = [
     "doa", "dead", "scam", "fraud", "avoid", "terrible", "awful", "horrible",
@@ -212,7 +225,7 @@ class Dashboard(tk.Tk):
                 "url":       reddit_url(p),
                 "neg":       neg,
                 "own":       own,
-                "direct":    query in DIRECT_QUERIES,
+                "direct":    _is_direct(query, title),
                 "query":     query,
             })
         for c in comments:
@@ -231,7 +244,7 @@ class Dashboard(tk.Tk):
                 "url":       reddit_url(c, "comment"),
                 "neg":       neg,
                 "own":       own,
-                "direct":    query in DIRECT_QUERIES,
+                "direct":    _is_direct(query, body),
                 "query":     query,
             })
         rows.sort(key=lambda r: r["epoch"], reverse=True)
