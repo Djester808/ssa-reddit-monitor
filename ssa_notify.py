@@ -17,7 +17,8 @@ from datetime import datetime
 USER_AGENT = "ssa-mention-monitor/1.0 (operated by Superior Shrimp & Aquatics)"
 
 PYTHON    = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Microsoft", "WindowsApps", "python.exe")
-DASHBOARD = os.path.join(os.path.expanduser("~"), "Downloads", "ssa_dashboard.py")
+_HERE     = os.path.dirname(os.path.abspath(__file__))
+DASHBOARD = os.path.join(_HERE, "ssa_dashboard.py")
 PROTOCOL  = "ssa-monitor"
 
 QUERIES = [
@@ -56,8 +57,8 @@ HIGH_SIGNAL_QUERIES = {
     "ssa",
 }
 
-OUTPUT_DIR  = os.path.dirname(os.path.abspath(__file__))
-LOG_DIR     = os.path.join(os.path.expanduser("~"), "Downloads", "ssa_monitor_logs")
+OUTPUT_DIR  = _HERE
+LOG_DIR     = os.path.join(_HERE, "ssa_monitor_logs")
 SEEN_FILE   = os.path.join(LOG_DIR, "seen_ids.json")
 RESULTS_FILE = os.path.join(LOG_DIR, "results_latest.json")
 LOG_FILE    = os.path.join(LOG_DIR, "log_latest.txt")

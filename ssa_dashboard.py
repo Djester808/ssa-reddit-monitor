@@ -13,11 +13,12 @@ from tkinter import ttk
 import webbrowser
 from datetime import datetime
 
-LOG_DIR     = os.path.join(os.path.expanduser("~"), "Downloads", "ssa_monitor_logs")
+_HERE        = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR      = os.path.join(_HERE, "ssa_monitor_logs")
 RESULTS_FILE = os.path.join(LOG_DIR, "results_latest.json")
-SEEN_FILE   = os.path.join(LOG_DIR, "seen_ids.json")
-NOTIFY_SCRIPT = os.path.join(os.path.expanduser("~"), "Downloads", "ssa_notify.py")
-PYTHON      = os.path.join(os.environ.get("LOCALAPPDATA",""), "Microsoft", "WindowsApps", "python.exe")
+SEEN_FILE    = os.path.join(LOG_DIR, "seen_ids.json")
+NOTIFY_SCRIPT = os.path.join(_HERE, "ssa_notify.py")
+PYTHON       = os.path.join(os.environ.get("LOCALAPPDATA",""), "Microsoft", "WindowsApps", "python.exe")
 
 DIRECT_QUERIES = {
     "superior shrimp aquatics",
