@@ -40,9 +40,9 @@ QUERIES = [
     ("superior aquatics",        "Aquariums"),
     ("superior aquatics",        "PlantedTank"),
     # SSA abbreviation in shrimp-specific subs only (too noisy globally)
-    ("ssa shrimp",               None),
-    ("ssa",                      "shrimptank"),
-    ("ssa",                      "AquaSwap"),
+    ("SSA shrimp",               None),
+    ("SSA",                      "shrimptank"),
+    ("SSA",                      "AquaSwap"),
     # Buying intent — potential customers
     ("WTB shrimp",               "AquaSwap"),
     ("WTB shrimp",               "shrimptank"),
@@ -219,7 +219,7 @@ def main():
             pid = p.get("id")
             if not pid or pid in seen_post_ids:
                 continue
-            if query in WHOLE_WORD_REQUIRED:
+            if query.lower() in WHOLE_WORD_REQUIRED:
                 text = (p.get("title") or "") + " " + (p.get("selftext") or "")
                 if not _whole_word_match(query, text):
                     continue
@@ -246,7 +246,7 @@ def main():
             cid = c.get("id")
             if not cid or cid in seen_comment_ids:
                 continue
-            if query in WHOLE_WORD_REQUIRED:
+            if query.lower() in WHOLE_WORD_REQUIRED:
                 if not _whole_word_match(query, c.get("body") or ""):
                     continue
             seen_comment_ids.add(cid)
