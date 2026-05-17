@@ -508,23 +508,25 @@ class Dashboard(tk.Tk):
             if query.lower() not in EXACT_BRAND_QUERIES:
                 if c.get("subreddit", "").lower() not in AQUATICS_SUBS:
                     continue
-            body   = (c.get("body") or c.get("link_title") or "").replace("&amp;", "&")
-            author = c.get("author", "")
-            neg    = is_negative(body)
-            own    = is_own_post(author)
+            body       = (c.get("body") or "").replace("&amp;", "&")
+            link_title = (c.get("link_title") or "").replace("&amp;", "&")
+            full_text  = body + " " + link_title
+            display    = body[:120] or link_title[:120] or reddit_url(c)
+            author     = c.get("author", "")
+            own        = is_own_post(author)
             rows.append({
                 "kind":      "comment",
                 "epoch":     c.get("created_utc", 0),
                 "subreddit": c.get("subreddit", ""),
                 "author":    author,
-                "title":     body[:120] or reddit_url(c),
+                "title":     display,
                 "score":     c.get("score", 0),
                 "url":       reddit_url(c, "comment"),
-                "neg":       neg,
-                "pos":       is_positive(body),
+                "neg":       is_negative(full_text),
+                "pos":       is_positive(full_text),
                 "own":       own,
-                "direct":    _is_direct(query, body),
-                "buying":    is_buying_intent(query, body),
+                "direct":    _is_direct(query, full_text),
+                "buying":    is_buying_intent(query, full_text),
                 "query":     query,
             })
         rows.sort(key=lambda r: r["epoch"], reverse=True)
