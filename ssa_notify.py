@@ -79,6 +79,21 @@ HIGH_SIGNAL_QUERIES = {
 # These queries must appear as whole words in the content, not substrings
 WHOLE_WORD_REQUIRED = {"ssa shrimp", "ssa"}
 
+# Exact brand queries — keep results from ANY subreddit (a mention anywhere matters)
+EXACT_BRAND_QUERIES = {
+    "superior shrimp aquatics",
+    "superiorshrimpaquatics",
+    "djester808",
+}
+
+# All other queries: only keep results from these subreddits
+AQUATICS_SUBS = {
+    "shrimptank", "aquaswap", "plantedtank", "aquariums", "aquaticplants",
+    "freshwater", "reeftank", "bettafish", "fishkeeping", "wetpetclassifieds",
+    "nanotank", "invertebrates", "neocaridina", "caridina", "duluth",
+    "minnesota",
+}
+
 def _whole_word_match(query, text):
     return bool(re.search(r'(?<!\w)' + re.escape(query) + r'(?!\w)', text, re.IGNORECASE))
 
@@ -219,6 +234,9 @@ def main():
             pid = p.get("id")
             if not pid or pid in seen_post_ids:
                 continue
+            if query.lower() not in EXACT_BRAND_QUERIES:
+                if p.get("subreddit", "").lower() not in AQUATICS_SUBS:
+                    continue
             if query.lower() in WHOLE_WORD_REQUIRED:
                 text = (p.get("title") or "") + " " + (p.get("selftext") or "")
                 if not _whole_word_match(query, text):
@@ -246,6 +264,9 @@ def main():
             cid = c.get("id")
             if not cid or cid in seen_comment_ids:
                 continue
+            if query.lower() not in EXACT_BRAND_QUERIES:
+                if c.get("subreddit", "").lower() not in AQUATICS_SUBS:
+                    continue
             if query.lower() in WHOLE_WORD_REQUIRED:
                 if not _whole_word_match(query, c.get("body") or ""):
                     continue
