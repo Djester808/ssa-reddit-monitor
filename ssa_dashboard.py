@@ -80,11 +80,12 @@ BUYING_QUERIES = {
 }
 
 BUYING_WORDS = [
-    "wtb", " iso ", "where to buy", "looking to buy", "want to buy",
-    "looking for shrimp", "anyone selling", "recommend a seller",
-    "best place to buy", "good seller", "shrimp seller",
-    "where can i buy", "where can i get", "in search of",
-    "who sells", "any sellers", "buying shrimp",
+    "wtb", "[wtb]", "[lf]", "[iso]", "in search of",
+    "looking for", "looking to buy", "want to buy",
+    "where to buy", "where can i buy", "where can i get",
+    "best place to buy", "best place to get",
+    "anyone selling", "any sellers", "recommend a seller",
+    "seller", "who sells", "buying shrimp", "buy shrimp",
 ]
 
 AQUATICS_WORDS = [
@@ -94,8 +95,6 @@ AQUATICS_WORDS = [
 ]
 
 def is_buying_intent(query, text):
-    if query in BUYING_QUERIES:
-        return True
     t = text.lower()
     return any(w in t for w in BUYING_WORDS) and any(w in t for w in AQUATICS_WORDS)
 
