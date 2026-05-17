@@ -108,9 +108,21 @@ NEG_WORDS = [
     "rude", "unprofessional", "never received", "wrong",
 ]
 
+_SSA_RE = re.compile(
+    r'superior shrimp aquatics|superiorshrimpaquatics|djester808'
+    r'|superior shrimp|superior aquatics|(?<!\w)ssa(?!\w)',
+    re.IGNORECASE,
+)
+
+def _mentions_ssa(text):
+    return bool(_SSA_RE.search(text))
+
 def is_negative(text):
     t = text.lower()
-    return any(w in t for w in NEG_WORDS)
+    return _mentions_ssa(text) and any(w in t for w in NEG_WORDS)
+
+def is_positive(text):
+    return _mentions_ssa(text) and not is_negative(text)
 
 def is_own_post(author):
     return (author or "").lower() in ("djester808", "superiorshrimpaquatics")
@@ -484,6 +496,7 @@ class Dashboard(tk.Tk):
                 "score":     p.get("score", 0),
                 "url":       reddit_url(p),
                 "neg":       neg,
+                "pos":       is_positive(title),
                 "own":       own,
                 "direct":    _is_direct(query, title),
                 "buying":    is_buying_intent(query, title),
@@ -507,6 +520,7 @@ class Dashboard(tk.Tk):
                 "score":     c.get("score", 0),
                 "url":       reddit_url(c, "comment"),
                 "neg":       neg,
+                "pos":       is_positive(body),
                 "own":       own,
                 "direct":    _is_direct(query, body),
                 "buying":    is_buying_intent(query, body),
@@ -529,7 +543,7 @@ class Dashboard(tk.Tk):
                 continue
             if filt == "neg" and not r["neg"]:
                 continue
-            if filt == "pos" and r["neg"]:
+            if filt == "pos" and not r["pos"]:
                 continue
             if filt == "own" and not r["own"]:
                 continue
