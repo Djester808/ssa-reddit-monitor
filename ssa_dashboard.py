@@ -117,9 +117,15 @@ _SSA_RE = re.compile(
 def _mentions_ssa(text):
     return bool(_SSA_RE.search(text))
 
+def _is_negated(text, neg_word):
+    pattern = r'\b(?:without|no|not|zero|never|didn\'t|wasn\'t|weren\'t)\b(?:\s+\w+){0,2}\s+' + re.escape(neg_word)
+    return bool(re.search(pattern, text, re.IGNORECASE))
+
 def is_negative(text):
+    if not _mentions_ssa(text):
+        return False
     t = text.lower()
-    return _mentions_ssa(text) and any(w in t for w in NEG_WORDS)
+    return any(w in t and not _is_negated(t, w) for w in NEG_WORDS)
 
 def is_positive(text):
     return _mentions_ssa(text) and not is_negative(text)
