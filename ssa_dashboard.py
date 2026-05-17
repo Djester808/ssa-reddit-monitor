@@ -483,10 +483,11 @@ class Dashboard(tk.Tk):
             if query.lower() not in EXACT_BRAND_QUERIES:
                 if p.get("subreddit", "").lower() not in AQUATICS_SUBS:
                     continue
-            title  = (p.get("title") or "").replace("&amp;", "&")
-            author = p.get("author", "")
-            neg    = is_negative(title)
-            own    = is_own_post(author)
+            title     = (p.get("title") or "").replace("&amp;", "&")
+            selftext  = (p.get("selftext") or "").replace("&amp;", "&")
+            full_text = title + " " + selftext
+            author    = p.get("author", "")
+            own       = is_own_post(author)
             rows.append({
                 "kind":      "post",
                 "epoch":     p.get("created_utc", 0),
@@ -495,10 +496,10 @@ class Dashboard(tk.Tk):
                 "title":     title,
                 "score":     p.get("score", 0),
                 "url":       reddit_url(p),
-                "neg":       neg,
-                "pos":       is_positive(title),
+                "neg":       is_negative(full_text),
+                "pos":       is_positive(full_text),
                 "own":       own,
-                "direct":    _is_direct(query, title),
+                "direct":    _is_direct(query, full_text),
                 "buying":    is_buying_intent(query, title),
                 "query":     query,
             })
