@@ -56,6 +56,19 @@ def _is_direct(query, text):
         return True
     return bool(re.search(r'(?<!\w)' + re.escape(query) + r'(?!\w)', text, re.IGNORECASE))
 
+EXACT_BRAND_QUERIES = {
+    "superior shrimp aquatics",
+    "superiorshrimpaquatics",
+    "djester808",
+}
+
+AQUATICS_SUBS = {
+    "shrimptank", "aquaswap", "plantedtank", "aquariums", "aquaticplants",
+    "freshwater", "reeftank", "bettafish", "fishkeeping", "wetpetclassifieds",
+    "nanotank", "invertebrates", "neocaridina", "caridina", "duluth",
+    "minnesota",
+}
+
 BUYING_QUERIES = {
     "wtb shrimp",
     "iso shrimp",
@@ -454,11 +467,14 @@ class Dashboard(tk.Tk):
         posts, comments = load_results()
         rows = []
         for p in posts:
+            query  = p.get("_query", "")
+            if query.lower() not in EXACT_BRAND_QUERIES:
+                if p.get("subreddit", "").lower() not in AQUATICS_SUBS:
+                    continue
             title  = (p.get("title") or "").replace("&amp;", "&")
             author = p.get("author", "")
             neg    = is_negative(title)
             own    = is_own_post(author)
-            query  = p.get("_query", "")
             rows.append({
                 "kind":      "post",
                 "epoch":     p.get("created_utc", 0),
@@ -474,11 +490,14 @@ class Dashboard(tk.Tk):
                 "query":     query,
             })
         for c in comments:
+            query  = c.get("_query", "")
+            if query.lower() not in EXACT_BRAND_QUERIES:
+                if c.get("subreddit", "").lower() not in AQUATICS_SUBS:
+                    continue
             body   = (c.get("body") or c.get("link_title") or "").replace("&amp;", "&")
             author = c.get("author", "")
             neg    = is_negative(body)
             own    = is_own_post(author)
-            query  = c.get("_query", "")
             rows.append({
                 "kind":      "comment",
                 "epoch":     c.get("created_utc", 0),
