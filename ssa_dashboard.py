@@ -100,12 +100,16 @@ def is_buying_intent(query, text):
     return any(w in t for w in BUYING_WORDS) and any(w in t for w in AQUATICS_WORDS)
 
 NEG_WORDS = [
-    "doa", "dead", "scam", "fraud", "avoid", "terrible", "awful", "horrible",
-    "worst", "beware", "warning", "refund", "dispute", "ignored", "no response",
-    "never again", "disappointed", "lied", "fake", "garbage", "trash",
-    "do not", "don't", "bad experience", "poor", "blocked", "ghosted",
-    "sick", "disease", "parasite", "clado", "mislabeled", "missing",
-    "rude", "unprofessional", "never received", "wrong",
+    "doa", "dead on arrival", "scam", "fraud", "avoid",
+    "terrible", "awful", "horrible", "worst", "beware", "warning",
+    "refund", "dispute", "ignored", "no response", "never again",
+    "disappointed", "lied", "fake", "garbage", "trash",
+    "do not buy", "do not order", "do not recommend", "do not trust",
+    "don't buy", "don't order", "don't recommend", "don't trust",
+    "bad experience", "blocked", "ghosted",
+    "disease", "parasite", "clado", "mislabeled",
+    "wrong order", "wrong shrimp", "missing shrimp", "missing order",
+    "rude", "unprofessional", "never received",
 ]
 
 _SSA_RE = re.compile(
