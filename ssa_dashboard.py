@@ -52,9 +52,7 @@ DIRECT_QUERIES = _EXACT_QUERIES | {
 }
 
 def _is_direct(query, text):
-    if query in _EXACT_QUERIES:
-        return True
-    return bool(re.search(r'(?<!\w)' + re.escape(query) + r'(?!\w)', text, re.IGNORECASE))
+    return _mentions_ssa(text)
 
 EXACT_BRAND_QUERIES = {
     "superior shrimp aquatics",
