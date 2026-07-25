@@ -4,9 +4,14 @@
 !ssa_notify.py
 !ssa_dashboard.py
 !ssa_reddit.py
+!ssa_weekly_post.py
+!ssa_post_template.md
 !ssa_fetch_threads.py
 !ssa_fetch_threads2.py
 !test_ssa.py
 !README.md
 # Never commit credentials
 ssa_creds.json
+# Generated preview and downloaded images
+ssa_post_preview.html
+ssa_post_images/

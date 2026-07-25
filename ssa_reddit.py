@@ -39,15 +39,19 @@ def _get_reddit():
         username      = USERNAME,
         password      = creds["password"],
         user_agent    = "ssa-monitor/1.0 by djester808",
+        ratelimit_seconds = 1,
     )
 
 def test_auth():
     r = _get_reddit()
     return r.user.me().name
 
-def post_comment(post_url, body):
+def post_comment(url, body, kind="post"):
+    """Reply to a post or comment. kind='post' or 'comment'."""
     r = _get_reddit()
-    return r.submission(url=post_url).reply(body)
+    if kind == "comment":
+        return r.comment(url=url).reply(body)
+    return r.submission(url=url).reply(body)
 
 def send_dm(to_user, subject, body):
     r = _get_reddit()
@@ -56,3 +60,8 @@ def send_dm(to_user, subject, body):
 def submit_post(subreddit, title, body):
     r = _get_reddit()
     return r.subreddit(subreddit).submit(title, selftext=body)
+
+def submit_gallery(subreddit, title, image_paths):
+    r = _get_reddit()
+    images = [{"image_path": p} for p in image_paths]
+    return r.subreddit(subreddit).submit_gallery(title=title, images=images)
